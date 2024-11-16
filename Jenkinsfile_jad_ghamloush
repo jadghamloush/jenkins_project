@@ -6,34 +6,27 @@ pipeline {
     stages {
         stage('Setup') {
             steps {
-                script {
-                    if (!fileExists("${env.WORKSPACE}/${VIRTUAL_ENV}")) {
-                        sh "python -m venv ${VIRTUAL_ENV}"
-                    }
-                    sh "source ${VIRTUAL_ENV}/bin/activate && pip install -r requirements.txt"
-                }
+                bat "python -m venv %VIRTUAL_ENV%"
+                bat "%VIRTUAL_ENV%\\Scripts\\pip install -r requirements.txt"
             }
         }
         stage('Lint') {
             steps {
-                script {
-                    sh "source ${VIRTUAL_ENV}/bin/activate && flake8 app.py"
-                }
+                bat "%VIRTUAL_ENV%\\Scripts\\flake8 app.py"
             }
         }
         stage('Test') {
             steps {
-                script {
-                    sh "source ${VIRTUAL_ENV}/bin/activate && pytest tests/"
-                }
+                bat "%VIRTUAL_ENV%\\Scripts\\pytest tests/"
             }
         }
         stage('Deploy') {
             steps {
-                script {
-                    // Deployment logic, e.g., pushing to a remote server
-                    echo "Deploying application..."
-                }
+                bat """
+                REM Example Deployment Commands
+                echo Deploying application...
+                REM Add your deployment logic here
+                """
             }
         }
     }
