@@ -32,6 +32,29 @@ pipeline {
                 """
             }
         }
+        stage('Coverage') {
+            steps {
+                bat "venv\\Scripts\\coverage.exe run -m pytest tests/"
+                bat "venv\\Scripts\\coverage.exe report"
+                // Optionally, generate an HTML report
+                bat "venv\\Scripts\\coverage.exe html"
+                // Archive the coverage report
+                publishHTML(target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: 'htmlcov',
+                    reportFiles: 'index.html',
+                    reportName: 'Coverage Report'
+                ])
+            }
+        }
+        stage('Security Scan') {
+            steps {
+                bat "venv\\Scripts\\bandit.exe -r app.py"
+            }
+        }
+
     }
     post {
         always {
