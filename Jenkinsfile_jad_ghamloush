@@ -7,17 +7,20 @@ pipeline {
         stage('Setup') {
             steps {
                 bat "python -m venv %VIRTUAL_ENV%"
-                bat "%VIRTUAL_ENV%\\Scripts\\pip install -r requirements.txt"
+                bat "%VIRTUAL_ENV%\\Scripts\\pip.exe install -r requirements.txt"
             }
         }
         stage('Lint') {
             steps {
-                bat "%VIRTUAL_ENV%\\Scripts\\flake8 app.py"
+                bat "%VIRTUAL_ENV%\\Scripts\\flake8.exe app.py"
             }
         }
         stage('Test') {
             steps {
-                bat "%VIRTUAL_ENV%\\Scripts\\pytest tests/"
+                bat """
+                set PYTHONPATH=%cd%
+                venv\\Scripts\\pytest.exe tests/
+                """
             }
         }
         stage('Deploy') {
