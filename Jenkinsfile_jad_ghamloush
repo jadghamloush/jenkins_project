@@ -23,15 +23,6 @@ pipeline {
                 """
             }
         }
-        stage('Deploy') {
-            steps {
-                bat """
-                REM Example Deployment Commands
-                echo Deploying application...
-                REM Add your deployment logic here
-                """
-            }
-        }
         stage('Coverage') {
             steps {
                 bat "venv\\Scripts\\coverage.exe run -m pytest tests/"
@@ -54,7 +45,21 @@ pipeline {
                 bat "venv\\Scripts\\bandit.exe -r app.py"
             }
         }
-
+        stage('Deploy') {
+            steps {
+                bat """
+                REM Basic Local Deployment Commands
+                echo Deploying application to local deployment directory...
+                REM Create deployment directory if it doesn't exist
+                if not exist "C:\\Deployment\\MyApp\\" (
+                    mkdir "C:\\Deployment\\MyApp\\"
+                )
+                REM Copy all project files to the deployment directory
+                xcopy /E /I /Y "%WORKSPACE%\\*" "C:\\Deployment\\MyApp\\"
+                echo Deployment completed successfully.
+                """
+            }
+        }
     }
     post {
         always {
